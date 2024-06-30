@@ -4,7 +4,6 @@ import ReactFlow, { useReactFlow } from "reactflow";
 
 export interface menuProps {
   services?: any;
-  edit?: any;
   nodeList: Array<any>;
   nodes: Array<any>;
   addNodeOnClick?: (event) => void;
@@ -36,12 +35,12 @@ const NodePanel = ({
 
   const filteredNodeOptions = (query) => {
     setSearchQuery(query);
-    const filter = {
-      category: "PROCESS",
-      label: "/" + query + "/",
-    };
+    // const filter = {
+    //   category: "PROCESS",
+    //   label: "/" + query + "/",
+    // };
 
-    setTimeout(dataPipeService.getAvailableNodes({ filter }), 500);
+    // setTimeout(dataPipeService.getAvailableNodes({ filter }), 500);
   };
 
   return (
@@ -60,7 +59,8 @@ const NodePanel = ({
           {nodeOptions.map((item, index) => (
             <div
               key={index}
-              className=" list-group-item list-group-item-action px-3 py-2 d-flex flex-align-center"
+              className="list-group-item list-group-item-action px-3 py-2 d-flex flex-align-center"
+              draggable={true}
               onDragStart={(event) => onDragStart(event, "default", item)}
             >
               <span className={`handle mr-2 ${item.icon}`}></span>

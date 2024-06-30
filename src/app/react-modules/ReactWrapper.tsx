@@ -43,20 +43,36 @@ export class ReactWrapper
   constructor() {}
 
   ngOnInit(): void {
-    // this.checkPaths();
-    // this.dataPipeService.reRender.subscribe(() => {
-    //   this.reRender(this.nodeList);
-    // });
-    // this.services.flowService.reCreatePaths.subscribe(() => {
-    //   this.reRender(this.nodeList);
-    // });
+    this.nodes = [
+      {
+        _id: "Node1",
+        type: "Test",
+        label: "Node1",
+        name: "Node1",
+      },
+      {
+        _id: "Node2",
+        type: "Test",
+        label: "Node2",
+        name: "Node2",
+      },
+      {
+        _id: "Node3",
+        type: "Test",
+        label: "Node3",
+        name: "Node3",
+      },
+    ];
   }
 
   addNode(event) {
-    // if (this.onAddNode) {
-    //   this.onAddNode.emit(event);
-    //   this.render();
-    // }
+    if (this.onAddNode) {
+      const node = event.item;
+      node["coordinates"] = event.position;
+      node["_id"] = node["_id"] + this.nodeList.length;
+      this.nodeList.push(node);
+      this.render();
+    }
   }
 
   isInputNode(node) {
