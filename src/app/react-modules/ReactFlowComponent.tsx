@@ -132,15 +132,7 @@ export function ReactFlowBase(props: FlowProps) {
       if (source && target) {
         if (nodeList.find((node) => node._id === target)) {
           // console.log('Deleting edge');
-          const node = nodeList.find((node) => node._id === source);
-          services["dataPipeService"].removeMappings(node);
-          if (e.sourceHandle === "error") {
-            node["onError"] = removeNodeById(node["onError"] || [], target);
-          } else if (e.sourceHandle === "success") {
-            node["onSuccess"] = removeNodeById(node["onSuccess"], target);
-          }
-        } else {
-          const newEdges = edges.filter((edge) => edge.id === e.id);
+          const newEdges = edges.filter((edge) => edge.id !== e.id);
           setEdges(newEdges);
         }
       }
@@ -153,80 +145,52 @@ export function ReactFlowBase(props: FlowProps) {
   const updateEdges = () => {
     const edges = [];
 
-    nodeList.forEach((entity) => {
-      if (entity.onSuccess && entity.onSuccess.length > 0) {
-        entity.onSuccess.forEach((success) => {
-          if (entity._id === success._id) {
-            return;
-          }
-          edges.push({
-            id: `${entity._id}->${success._id}-s`,
-            type: ConnectionLineType.SmoothStep,
-            source: entity._id,
-            target: success._id,
-            sourceHandle: "success",
-            label: success.name || "",
-            data: { ...success, pathType: "success" },
-            style: success["color"] ? { stroke: `#${success.color}` } : {},
-            markerEnd: {
-              type: MarkerType.ArrowClosed,
-              color: success["color"] ? `#${success.color}` : "#666",
-            },
-          });
-        });
-      }
-      if (entity.onError && entity.onError.length > 0) {
-        entity.onError.forEach((error) => {
-          if (entity._id === error._id) {
-            return;
-          }
-          edges.push({
-            id: `${entity._id}->${error._id}-e`,
-            type: ConnectionLineType.SmoothStep,
-            source: entity._id,
-            target: error._id,
-            sourceHandle: "success",
-            label: error.name || "",
-            data: { ...error, pathType: "error" },
-            style: { stroke: "#F44336" },
-            markerEnd: {
-              type: MarkerType.ArrowClosed,
-              color: "#F44336",
-            },
-          });
-        });
-      }
-    });
+    // nodeList.forEach((entity) => {
+    //    edges.push({
+    //      type: ConnectionLineType.SmoothStep,
+    //      source: entity.source,
+    //      target: entity.target,
+    //      sourceHandle: "success",
+    //      label: entity.name || "",
+    //      data: { ...success, pathType: "success" },
+    //      style: success["color"] ? { stroke: `#${success.color}` } : {},
+    //      markerEnd: {
+    //        type: MarkerType.ArrowClosed,
+    //        color: success["color"] ? `#${success.color}` : "#666",
+    //      },
+    //    });
+
+    // });
 
     setEdges(edges);
     // services.flowService.selectedPath.emit(null)
   };
 
   const nodeChange = (currentEdges) => {
-    currentEdges.forEach((edge) => {
-      const node = nodeList.find((n) => n._id === edge.source);
-      const obj = {
-        index: 0,
-        name: edge.label || "",
-        condition: edge.data?.condition || "",
-        _id: edge.target,
-        color: edge?.style?.stroke || "",
-        markerEnd: {
-          type: MarkerType.ArrowClosed,
-          color: edge?.style?.stroke || "#666",
-        },
-      };
-      if (edge.sourceHandle === "success" || edge.sourceHandle === "error") {
-        const element = edge.sourceHandle === "error" ? "onError" : "onSuccess";
-        const sourceArray = node[element] || [];
-        if (!sourceArray.some((ele) => ele._id === edge.target)) {
-          node[element] =
-            edge.sourceHandle === "error"
-              ? [{ _id: obj._id }]
-              : addIndextoSuccess(sourceArray, obj);
-        }
-      }
-    });
+    // currentEdges.forEach((edge) => {
+    //   const node = nodeList.find((n) => n._id === edge.source);
+    //   const obj = {
+    //     index: 0,
+    //     name: edge.label || "",
+    //     condition: edge.data?.condition || "",
+    //     _id: edge.target,
+    //     color: edge?.style?.stroke || "",
+    //     markerEnd: {
+    //       type: MarkerType.ArrowClosed,
+    //       color: edge?.style?.stroke || "#666",
+    //     },
+    //   };
+    //   if (edge.sourceHandle === "success" || edge.sourceHandle === "error") {
+    //     const element = edge.sourceHandle === "error" ? "onError" : "onSuccess";
+    //     const sourceArray = node[element] || [];
+    //     if (!sourceArray.some((ele) => ele._id === edge.target)) {
+    //       node[element] =
+    //         edge.sourceHandle === "error"
+    //           ? [{ _id: obj._id }]
+    //           : addIndextoSuccess(sourceArray, obj);
+    //     }
+    //   }
+    // });
     setEdges(currentEdges);
     // changeNodeList(nodeList)
   };
@@ -238,8 +202,7 @@ export function ReactFlowBase(props: FlowProps) {
   };
 
   const onConnect = (event) => {
-    const type = event.sourceHandle?.charAt(0);
-    event["id"] = `${event.source}->${event.target}-${type}`;
+    event["id"] = `${event.source}->${event.target}`;
     event["type"] = ConnectionLineType.SmoothStep;
     if (edges.find((edge) => edge.id === event.id)) {
       return;

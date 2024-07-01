@@ -84,8 +84,9 @@ export class ReactWrapper
   }
 
   reRender(nodeList) {
+    this.nodeList = nodeList;
     // this.changeNodeList.emit(nodeList);
-    // this.render();
+    this.render();
   }
 
   openProperty(nodeId) {

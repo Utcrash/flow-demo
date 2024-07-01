@@ -9,9 +9,17 @@ interface handleProps {
 
 export default memo((props: handleProps) => {
   const { data, isConnectable } = props;
-  const className = data.nodeType! !== "V1_GLOBAL_ERROR";
   return (
     <>
+      <Handle
+        type="target"
+        position={Position.Left}
+        isConnectable={isConnectable}
+        style={{
+          background: "#fff",
+          border: "0.5px solid rgb(102,102,102, 0.7)",
+        }}
+      />
       <Handle
         type="source"
         position={Position.Top}
