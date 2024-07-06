@@ -59,7 +59,7 @@ export class ReactWrapper
         type: "A",
         label: "Node1",
         name: "Node1",
-        output_nodes: ["B"],
+        outputNodes: ["B"],
         nextNode: [],
       },
       {
@@ -67,7 +67,7 @@ export class ReactWrapper
         type: "B",
         label: "Node2",
         name: "Node2",
-        output_nodes: ["C"],
+        outputNodes: ["C"],
         nextNode: [],
       },
       {
@@ -75,7 +75,7 @@ export class ReactWrapper
         type: "C",
         label: "Node3",
         name: "Node3",
-        output_nodes: ["A"],
+        outputNodes: ["A"],
         nextNode: [],
       },
     ];

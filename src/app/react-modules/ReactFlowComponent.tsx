@@ -208,8 +208,14 @@ export function ReactFlowBase(props: FlowProps) {
     if (edges.find((edge) => edge.id === event.id)) {
       return;
     }
-    const currentEdges = [...edges, event];
-    nodeChange(currentEdges);
+    const node = nodeList.find((ele) => ele._id === event.source);
+    const targetType = nodeList.find((ele) => ele._id === event.target)?.type;
+    if (node && node.outputNodes.find((ele) => ele === targetType)) {
+      const currentEdges = [...edges, event];
+      nodeChange(currentEdges);
+    } else {
+      return;
+    }
   };
 
   const openProperties = (event, node) => {
