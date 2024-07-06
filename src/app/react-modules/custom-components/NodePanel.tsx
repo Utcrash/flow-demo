@@ -63,7 +63,10 @@ const NodePanel = ({
               draggable={true}
               onDragStart={(event) => onDragStart(event, "default", item)}
             >
-              <span className={`handle mr-2 ${item.icon}`}></span>
+              <span
+                className={`handle mr-2 fa fa-cube`}
+                style={{ marginRight: "10px" }}
+              ></span>
               <span className="text">{item.label}</span>
             </div>
           ))}

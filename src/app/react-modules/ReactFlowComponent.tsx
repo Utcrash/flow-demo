@@ -276,7 +276,6 @@ export function ReactFlowBase(props: FlowProps) {
   };
 
   const changeNode = (intersections?) => {
-    const iconList = [];
     return nodeList.map((node) => {
       return {
         id: node._id,
@@ -285,7 +284,7 @@ export function ReactFlowBase(props: FlowProps) {
         data: {
           label: _.truncate(node.name, { length: 15 }),
           type: node.nodeType,
-          icon: node.icon,
+          icon: "fa fa-cube",
           nodeType: node.type,
           nextNode: node.nextNode,
           isInputNode: isInputNode(node),

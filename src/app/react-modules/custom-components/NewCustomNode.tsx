@@ -20,21 +20,12 @@ export default memo((props: handleProps) => {
           border: "0.5px solid rgb(102,102,102, 0.7)",
         }}
       />
-      <Handle
-        type="source"
-        position={Position.Top}
-        isConnectable={false}
-        style={
-          data.hasErrors
-            ? { background: "transparent", left: "55px", border: "none" }
-            : { display: "none", background: "#fff" }
-        }
-      >
-        <span className="text-danger nodeIcon"></span>
-      </Handle>
+
       <div className="d-flex align-items-center w-100 mt-1">
-        <span className={data.icon + " nodeIcon"}></span>
-        <span className="text-truncate">{data.label}</span>
+        <span className={"fa fa-cube nodeIcon"}></span>
+        <span className="text-truncate" style={{ fontSize: "6px" }}>
+          {data.label}
+        </span>
       </div>
       <Handle
         type="source"
