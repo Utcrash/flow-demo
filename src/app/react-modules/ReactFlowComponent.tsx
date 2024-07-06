@@ -145,22 +145,21 @@ export function ReactFlowBase(props: FlowProps) {
   const updateEdges = () => {
     const edges = [];
 
-    // nodeList.forEach((entity) => {
-    //    edges.push({
-    //      type: ConnectionLineType.SmoothStep,
-    //      source: entity.source,
-    //      target: entity.target,
-    //      sourceHandle: "success",
-    //      label: entity.name || "",
-    //      data: { ...success, pathType: "success" },
-    //      style: success["color"] ? { stroke: `#${success.color}` } : {},
-    //      markerEnd: {
-    //        type: MarkerType.ArrowClosed,
-    //        color: success["color"] ? `#${success.color}` : "#666",
-    //      },
-    //    });
-
-    // });
+    nodeList.forEach((entity) => {
+      if (entity?.nextNode?.length > 0) {
+        edges.push({
+          type: ConnectionLineType.SmoothStep,
+          source: entity?._id,
+          target: entity?.nextNode[0]?._id,
+          sourceHandle: "success",
+          data: { ...entity, pathType: "success" },
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            color: "#666",
+          },
+        });
+      }
+    });
 
     setEdges(edges);
     // services.flowService.selectedPath.emit(null)
@@ -191,14 +190,16 @@ export function ReactFlowBase(props: FlowProps) {
     //     }
     //   }
     // });
+    currentEdges.forEach((edge) => {
+      const node = nodeList.find((n) => n._id === edge.source);
+      const target = nodeList.find((n) => n._id === edge.target);
+      node.nextNode.push(target);
+      node.nextNode = _.uniq(node.nextNode).filter(Boolean);
+    });
+    console.log(nodeList);
     setEdges(currentEdges);
+    // nodeChange(currentEdges);
     // changeNodeList(nodeList)
-  };
-
-  const addIndextoSuccess = (paths, toAdd) => {
-    // const newPath = paths.length;
-    // toAdd['index'] = paths.length;
-    return [...paths, { _id: toAdd._id }];
   };
 
   const onConnect = (event) => {
@@ -277,41 +278,16 @@ export function ReactFlowBase(props: FlowProps) {
   const changeNode = (intersections?) => {
     const iconList = [];
     return nodeList.map((node) => {
-      const iconObj =
-        iconList.find((e) => {
-          if (e.subType) {
-            if (node.type === "CONNECTOR") {
-              return e.subType === node.options.connectorType;
-            } else {
-              return false;
-            }
-          } else {
-            return (
-              node.type?.startsWith(e.nodeType) &&
-              (e.isInput ? isInputNode(node) === e.isInput : true)
-            );
-          }
-        }) || {};
-      if (node.type && !node.nodeType) {
-        node.nodeType =
-          node.type === "ERROR" ? "customErrorNode" : "customNewNode";
-      }
-
-      const hasErrors =
-        errorList.find((e) => e._id == node._id)?.errors?.length > 0;
-      if (hasErrors) {
-        node.nodeType = "customErrorNode";
-      }
       return {
         id: node._id,
-        type: node.type === "ERROR" ? "customErrorNode" : "customNewNode",
+        type: "customNewNode",
         position: { x: node.coordinates.x, y: node.coordinates.y },
         data: {
           label: _.truncate(node.name, { length: 15 }),
           type: node.nodeType,
-          icon: node.icon || iconObj.icon,
+          icon: node.icon,
           nodeType: node.type,
-          hasErrors,
+          nextNode: node.nextNode,
           isInputNode: isInputNode(node),
         },
         targetPosition: Position.Left,

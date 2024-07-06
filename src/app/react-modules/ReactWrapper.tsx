@@ -20,7 +20,15 @@ import ReactFlowComponent from "./ReactFlowComponent";
 const containerElementRef = "customReactComponentContainer";
 @Component({
   selector: "react-flow",
-  template: `<div id="react-root"></div>`,
+  template: `<div>
+    <div id="react-root"></div>
+    <div class="props" *ngIf="toggleProps">
+      <app-props
+        [nodeDetails]="currNode"
+        (closeProps)="toggleProps = false"
+      ></app-props>
+    </div>
+  </div>`,
   styleUrls: ["./reactflow.scss"],
   encapsulation: ViewEncapsulation.None,
 })
@@ -40,27 +48,35 @@ export class ReactWrapper
   nodes: Array<any> = [];
   services: any = {};
   root: any;
+  toggleProps: Boolean = false;
+  currNode: any = {};
   constructor() {}
 
   ngOnInit(): void {
     this.nodes = [
       {
         _id: "Node1",
-        type: "Test",
+        type: "A",
         label: "Node1",
         name: "Node1",
+        output_nodes: ["B"],
+        nextNode: [],
       },
       {
         _id: "Node2",
-        type: "Test",
+        type: "B",
         label: "Node2",
         name: "Node2",
+        output_nodes: ["C"],
+        nextNode: [],
       },
       {
         _id: "Node3",
-        type: "Test",
+        type: "C",
         label: "Node3",
         name: "Node3",
+        output_nodes: ["A"],
+        nextNode: [],
       },
     ];
   }
@@ -90,6 +106,9 @@ export class ReactWrapper
   }
 
   openProperty(nodeId) {
+    this.currNode = this.nodeList.find((node) => node._id === nodeId);
+    this.toggleProps = true;
+
     // const currNode = this.nodeList.find((e) => e._id == nodeId);
     // const prevNode = this.nodeList.find((e: any) =>
     //   (e.onSuccess || []).find((ei) => ei._id == nodeId)
@@ -151,7 +170,8 @@ export class ReactWrapper
   }
 
   clickCanvas(event) {
-    this.onCanvasClick.emit();
+    this.toggleProps = false;
+    // this.onCanvasClick.emit();
   }
   private render() {
     const errorList = this.nodeList.map((node) => {
